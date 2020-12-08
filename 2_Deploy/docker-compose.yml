@@ -6,8 +6,7 @@ volumes:
   centreonpoller-lib:
 services:
     centreon:
-        env_file:
-            - deploymentvariables.env
+        env_file: .env
         image: "itanywhere/ita-centreonpoller-20-10"
         entrypoint:
             - /root/entrypoint.sh
@@ -15,7 +14,6 @@ services:
         hostname: ${HOSTNAME}
         domainname: ${DOMAINNAME}
         restart: on-failure
-#        privileged: true
         volumes:
             - centreonpoller-etc:/etc
             - centreonpoller-cache:/var/cache
