@@ -1,5 +1,5 @@
-# Centreon.20.04.Collaboration
-Centreon.20.04.Collaboration
+# ITA-Docker-Centreon-Poller-20-10
+ITA-Docker-Centreon-Poller-20-10
 
 Basic steps Host:
   - Deploy Centreon 20.10 host server from ISO following the instructions in the Centreon knowledge base: https://docs.centreon.com/current/en/installation/installation-of-a-central-server/using-centreon-iso.html
