@@ -1,0 +1,29 @@
+#Written by Sergio Padure for IT-Anywhere
+version: "3.4"
+volumes:
+  centreonpoller-etc:
+  centreonpoller-cache:
+  centreonpoller-lib:
+services:
+    centreon:
+        env_file:
+            - deploymentvariables.env
+        image: "itanywhere/ita-centreonpoller-20.10"
+        entrypoint:
+            - /root/entrypoint.sh
+        container_name: centreon_poller
+        hostname: ${HOSTNAME}
+        domainname: ${DOMAINNAME}
+        restart: on-failure
+#        privileged: true
+        volumes:
+            - centreonpoller-etc:/etc
+            - centreonpoller-cache:/var/cache
+            - centreonpoller-lib:/var/lib/
+        environment:
+            - PRIVKEY=${PRIVKEY}
+            - PUBKEYURL=${PUBKEYURL}
+            - POLLERID=${POLLERID}
+        ports:
+            - "22:22"
+            - "5550-5560:5550-5560"
