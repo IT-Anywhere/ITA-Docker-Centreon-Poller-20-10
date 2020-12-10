@@ -27,5 +27,6 @@ Basic steps Host:
 Basic steps pollers:
   - Double click on StartImport.bat to install the basic requirements. Check logfile to make sure everything is correctly installed
   - From folder 2_Deploy modify the deploymentvariables.env and add the necessary information
+  - Configure Wireguard with the previously created client configuration
   - docker-compose up -d
   - Push configuration from Central to this poller and tail -f /var/lib/centreon-gorgone/gorgoned.log to make sure everything is being deployed correctly
