@@ -5,7 +5,6 @@
 #Requires -PSEdition Desktop
 
 $winver = Get-ComputerInfo | Select-Object -ExpandProperty 'WindowsVersion'
-$mainpath = Resolve-Path ..\ | Select-Object -ExpandProperty 'Path'
 
 if ($winver -lt 1909) {
     throw "Windows 10 version is too old. Please upgrade to 1909 or higher and re-run the script"
@@ -14,6 +13,7 @@ else {
     Write-Host "Windows version is $winver. Continuing"
     #Preparing logging and general variables
     $scriptdir = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
+    $mainpath = Split-Path $PSScriptRoot -Parent
     $WorkingDirectory = "C:\temp"
     $WDExists = Test-Path -Path $WorkingDirectory
     if (-not $WDExists) {
