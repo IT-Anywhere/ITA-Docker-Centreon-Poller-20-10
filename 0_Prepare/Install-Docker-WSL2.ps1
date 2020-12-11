@@ -5,6 +5,7 @@
 #Requires -PSEdition Desktop
 
 $winver = Get-ComputerInfo | Select-Object -ExpandProperty 'WindowsVersion'
+$mainpath = Resolve-Path ..\ | Select-Object -ExpandProperty 'Path'
 
 if ($winver -lt 1909) {
     throw "Windows 10 version is too old. Please upgrade to 1909 or higher and re-run the script"
@@ -106,10 +107,13 @@ else {
     }
 
     #Registering the automatic scheduled task that will keep Docker up to date even if running as a service account
+    Write-Host "Installing scheduled task"
     try {
+        #Preparing file variable
+        $scheduledarguments = "-WindowStyle Hidden -ExecutionPolicy Bypass -File $mainpath\3_Maintain\DockerAutoUpdate\Update-Docker.ps1"
         #Preparing the Scheduled Task Properties
         $trigger = New-ScheduledTaskTrigger -Daily -At 1am
-        $action = New-ScheduledTaskAction -Execute 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -Argument '-WindowStyle Hidden -ExecutionPolicy Bypass -File "C:\temp\Code\ITA-Docker-Centreon-Poller-20-10\3_Maintain\DockerAutoUpdate\Update-Docker.ps1"'
+        $action = New-ScheduledTaskAction -Execute 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -Argument $scheduledarguments
         $settings = New-ScheduledTaskSettingsSet -Compatibility Win8 -StartWhenAvailable -RestartCount 999
         $settings.ExecutionTimeLimit = 'PT72H'
         $settings.RestartInterval = 'PT1M' 
