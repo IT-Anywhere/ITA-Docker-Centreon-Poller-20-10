@@ -33,6 +33,8 @@ else {
     try {
         dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
         dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+        #dism.exe /online /enable-feature /featurename:Microsoft-Hyper-V /all /norestart
+        #bcdedit.exe /set hypervisorlaunchtype auto
     }
     catch {
         $_
@@ -120,7 +122,7 @@ else {
         $settings.RestartInterval = 'PT1M' 
 
         #Registering the scheduled task
-        Register-ScheduledTask -Action $action -Trigger $trigger -TaskName UpdateDocker -Settings $settings -User "NT AUTHORITY\SYSTEM" -RunLevel Highest
+        Register-ScheduledTask -Action $action -Trigger $trigger -TaskName UpdateDocker -Settings $settings -User "NT AUTHORITY\SYSTEM" -RunLevel Highest -ErrorAction SilentlyContinue
 
         #Starting the scheduled task
         Start-ScheduledTask -TaskName "UpdateDocker" -ErrorAction SilentlyContinue
