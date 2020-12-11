@@ -13,6 +13,7 @@ else {
     Write-Host "Windows version is $winver. Continuing"
     #Preparing logging and general variables
     $scriptdir = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
+    $mainpath = Split-Path $PSScriptRoot -Parent
     $WorkingDirectory = "C:\temp"
     $WDExists = Test-Path -Path $WorkingDirectory
     if (-not $WDExists) {
@@ -70,13 +71,14 @@ else {
     $Installer = "dockerdesktop.exe"
     $InstallerFullPath = Join-Path -Path $WorkingDirectory -ChildPath $Installer
     $Installerexists = Test-Path -Path $InstallerFullPath
+    $dockerinstalllog = "$WorkingDirectory\docker-$dateandtime.log"
     if (-not $Installerexists) {
         Invoke-WebRequest -Uri $docker -OutFile $InstallerFullPath | Out-Null
     }
     $arguments = "install --quiet"
     try {
         # Install the package
-        Start-Process $InstallerFullPath -ArgumentList $arguments -Wait -NoNewWindow
+        Start-Process $InstallerFullPath -ArgumentList $arguments -Wait -RedirectStandardOutput $dockerinstalllog -NoNewWindow
     }
     catch {
         $_
@@ -105,12 +107,34 @@ else {
         $_
     }
 
-    #Preparing mount directory
+    #Registering the automatic scheduled task that will keep Docker up to date even if running as a service account
+    Write-Host "Installing scheduled task"
+    try {
+        #Preparing file variable
+        $scheduledarguments = "-WindowStyle Hidden -ExecutionPolicy Bypass -File `"$mainpath\3_Maintain\DockerAutoUpdate\Update-Docker.ps1`""
+        #Preparing the Scheduled Task Properties
+        $trigger = New-ScheduledTaskTrigger -Daily -At 1am
+        $action = New-ScheduledTaskAction -Execute 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -Argument $scheduledarguments
+        $settings = New-ScheduledTaskSettingsSet -Compatibility Win8 -StartWhenAvailable -RestartCount 999
+        $settings.ExecutionTimeLimit = 'PT72H'
+        $settings.RestartInterval = 'PT1M' 
+
+        #Registering the scheduled task
+        Register-ScheduledTask -Action $action -Trigger $trigger -TaskName UpdateDocker -Settings $settings -User "NT AUTHORITY\SYSTEM" -RunLevel Highest
+
+        #Starting the scheduled task
+        Start-ScheduledTask -TaskName "UpdateDocker" -ErrorAction SilentlyContinue
+    }catch{
+        $_
+    }
+    <#
+    #Preparing mount directory. Commented out since testing was unsuccessful. Currently using standard Docker volumes
     $dockerdir = "C:\docker\centreon"
     $dockerfolderexists = Test-Path -Path $dockerdir
     if (-not $dockerfolderexists) {
         New-Item -ItemType Directory -Path $dockerdir
     }
+#>
 
 }
 
