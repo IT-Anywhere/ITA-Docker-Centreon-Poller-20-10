@@ -62,40 +62,31 @@ If (Test-Path $Docker_Reg_Path) {
     }				
 
     If ($New_Version_available -eq $True) {
-        Try {
-            $Docker_New_Version = $Docker_available_Version.Split(" ")[-1]
-            Write_Log -Message_Type "INFO" -Message "Starting Update"
-            $Run_Update_Status = $True
+        $New_Version_Download_Status = $False
+        $New_Docker_Version_Path = "$WorkingDirectory\Docker_Desktop_Installer.exe"
+        $Docker_Installer_Link = "https://download.docker.com/win/stable/Docker%20Desktop%20Installer.exe"
+        Write_Log -Message_Type "INFO" -Message "The new version will be downloaded"
+        Try {							
+            $Download_EXE = new-object -typename system.net.webclient
+            $Download_EXE.Downloadfile($Docker_Installer_Link, $New_Docker_Version_Path)									
+            $New_Version_Download_Status = $True
+            Write_Log -Message_Type "SUCCESS" -Message "The new version of $Appli_name has been successfully downloaded"																								
         }
-        Catch {
-            $Run_Update_Status = $False
-        }
-
-        If ($Run_Update_Status -eq $True) {
+        Catch {							
             $New_Version_Download_Status = $False
-            $New_Docker_Version_Path = "$WorkingDirectory\Docker_Desktop_Installer.exe"
-            $Docker_Installer_Link = "https://download.docker.com/win/stable/Docker%20Desktop%20Installer.exe"
-            Write_Log -Message_Type "INFO" -Message "The new version will be downloaded"
-            Try {							
-                $Download_EXE = new-object -typename system.net.webclient
-                $Download_EXE.Downloadfile($Docker_Installer_Link, $New_Docker_Version_Path)									
-                $New_Version_Download_Status = $True
-                Write_Log -Message_Type "SUCCESS" -Message "The new version of $Appli_name has been successfully downloaded"																								
-            }
-            Catch {							
-                $New_Version_Download_Status = $False
-                Write_Log -Message_Type "ERROR" -Message "An issue occured while downloading the new version of $Appli_name"																																		
-            }							
-        }
+            Write_Log -Message_Type "ERROR" -Message "An issue occured while downloading the new version of $Appli_name"																																		
+        }	
 
     }
     Else {
         Write_Log -Message_Type "INFO" -Message "There is no new version for $Appli_name"						
     }
-
     If (($New_Version_Download_Status -eq $True) -and ($Run_Update_Status -eq $True)) {
         Write_Log -Message_Type "INFO" -Message "The new version will be installed"	
-        
+        #Stopping the start-at-boot scheduled task
+        Write_Log -Message_Type "INFO" -Message "Stopping the start-at-boot scheduled task"	
+        Stop-ScheduledTask -TaskName "StartDockerAtStartup" -ErrorAction SilentlyContinue
+        #Starting install
         Try {			
             start-process -FilePath $New_Docker_Version_Path -ArgumentList "install --quiet" -RedirectStandardOutput $Log_File_Full -Wait
         }
@@ -103,6 +94,9 @@ If (Test-Path $Docker_Reg_Path) {
             Write_Log -Message_Type "ERROR" -Message "An issue occured while installing the new version of $Appli_name"																
         }		
     }	
+    #Starting the start-at-boot scheduled task
+    Write_Log -Message_Type "INFO" -Message "Starting the start-at-boot scheduled task"	
+    Start-ScheduledTask -TaskName "StartDockerAtStartup" -ErrorAction SilentlyContinue
 }
 Else {
     Write_Log -Message_Type "ERROR" -Message "$Appli_name is not installed on your computer"																
