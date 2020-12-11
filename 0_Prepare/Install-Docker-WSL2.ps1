@@ -71,13 +71,14 @@ else {
     $Installer = "dockerdesktop.exe"
     $InstallerFullPath = Join-Path -Path $WorkingDirectory -ChildPath $Installer
     $Installerexists = Test-Path -Path $InstallerFullPath
+    $dockerinstalllog = "$WorkingDirectory\docker-$dateandtime.log"
     if (-not $Installerexists) {
         Invoke-WebRequest -Uri $docker -OutFile $InstallerFullPath | Out-Null
     }
     $arguments = "install --quiet"
     try {
         # Install the package
-        Start-Process $InstallerFullPath -ArgumentList $arguments -Wait -NoNewWindow
+        Start-Process $InstallerFullPath -ArgumentList $arguments -Wait -RedirectStandardOutput $dockerinstalllog -NoNewWindow
     }
     catch {
         $_
