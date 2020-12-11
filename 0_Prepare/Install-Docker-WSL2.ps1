@@ -110,7 +110,7 @@ else {
     Write-Host "Installing scheduled task"
     try {
         #Preparing file variable
-        $scheduledarguments = "-WindowStyle Hidden -ExecutionPolicy Bypass -File $mainpath\3_Maintain\DockerAutoUpdate\Update-Docker.ps1"
+        $scheduledarguments = "-WindowStyle Hidden -ExecutionPolicy Bypass -File `"$mainpath\3_Maintain\DockerAutoUpdate\Update-Docker.ps1`""
         #Preparing the Scheduled Task Properties
         $trigger = New-ScheduledTaskTrigger -Daily -At 1am
         $action = New-ScheduledTaskAction -Execute 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -Argument $scheduledarguments
