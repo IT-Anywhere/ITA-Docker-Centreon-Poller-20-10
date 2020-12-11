@@ -75,8 +75,7 @@ If (Test-Path $Docker_Reg_Path) {
         Catch {							
             $New_Version_Download_Status = $False
             Write_Log -Message_Type "ERROR" -Message "An issue occured while downloading the new version of $Appli_name"																																		
-        }	
-
+        }
     }
     Else {
         Write_Log -Message_Type "INFO" -Message "There is no new version for $Appli_name"						

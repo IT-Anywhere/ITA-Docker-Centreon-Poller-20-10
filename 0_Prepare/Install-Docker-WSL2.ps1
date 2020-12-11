@@ -105,12 +105,31 @@ else {
         $_
     }
 
-    #Preparing mount directory
+    #Registering the automatic scheduled task that will keep Docker up to date even if running as a service account
+    try {
+        #Preparing the Scheduled Task Properties
+        $trigger = New-ScheduledTaskTrigger -Daily -At 1am
+        $action = New-ScheduledTaskAction -Execute 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -Argument '-WindowStyle Hidden -ExecutionPolicy Bypass -File "C:\temp\Code\ITA-Docker-Centreon-Poller-20-10\3_Maintain\DockerAutoUpdate\Update-Docker.ps1"'
+        $settings = New-ScheduledTaskSettingsSet -Compatibility Win8 -StartWhenAvailable -RestartCount 999
+        $settings.ExecutionTimeLimit = 'PT72H'
+        $settings.RestartInterval = 'PT1M' 
+
+        #Registering the scheduled task
+        Register-ScheduledTask -Action $action -Trigger $trigger -TaskName UpdateDocker -Settings $settings -User "NT AUTHORITY\SYSTEM" -RunLevel Highest
+
+        #Starting the scheduled task
+        Start-ScheduledTask -TaskName "UpdateDocker" -ErrorAction SilentlyContinue
+    }catch{
+        $_
+    }
+    <#
+    #Preparing mount directory. Commented out since testing was unsuccessful. Currently using standard Docker volumes
     $dockerdir = "C:\docker\centreon"
     $dockerfolderexists = Test-Path -Path $dockerdir
     if (-not $dockerfolderexists) {
         New-Item -ItemType Directory -Path $dockerdir
     }
+#>
 
 }
 
