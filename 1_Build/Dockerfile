@@ -7,13 +7,14 @@ WORKDIR /root
 
 LABEL   maintainer="IT-Anywhere - Sergio Padure" \
         name="Centreon 20.10 Docker Poller" \
-        version="0.15"
+        version="0.16"
 
 #Installing required packages
 RUN yum install -y epel-release centos-release-scl &&\
     yum install -y http://yum.centreon.com/standard/20.10/el7/stable/noarch/RPMS/centreon-release-20.10-2.el7.centos.noarch.rpm &&\
     yum update -y &&\
     yum install -y centreon-poller-centreon-engine openssh-server openssh-server-sysvinit sudo &&\
+    yum install -y yum install centreon-plugin-\* &&\
     yum install -y wget nano &&\
     yum clean all &&\
     rm -rf /var/cache/yum
