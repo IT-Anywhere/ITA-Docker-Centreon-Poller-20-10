@@ -7,7 +7,7 @@ WORKDIR /root
 
 LABEL   maintainer="IT-Anywhere - Sergio Padure" \
         name="Centreon 20.10 Docker Poller" \
-        version="0.19"
+        version="0.20
 
 #Installing required packages
 RUN yum install -y epel-release centos-release-scl &&\
@@ -17,7 +17,8 @@ RUN yum install -y epel-release centos-release-scl &&\
     yum install -y centreon-plugin-\* &&\
     yum install -y wget nano &&\
     yum clean all &&\
-    rm -rf /var/cache/yum
+    rm -rf /var/cache/yum &&\
+    ln -s /usr/lib/nagios/plugins/check_centreon_nrpe /usr/lib64/nagios/plugins/check_centreon_nrpe
 
 #Installing systemctl replacement in both paths to account for sudo
 RUN wget https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/master/files/docker/systemctl.py -O /usr/local/bin/systemctl &&\
