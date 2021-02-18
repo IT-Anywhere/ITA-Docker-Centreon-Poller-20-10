@@ -7,7 +7,7 @@ WORKDIR /root
 
 LABEL   maintainer="IT-Anywhere - Sergio Padure" \
         name="Centreon 20.10 Docker Poller" \
-        version="0.21"
+        version="0.22"
 
 #Installing required packages
 RUN yum install -y epel-release centos-release-scl &&\
@@ -19,6 +19,17 @@ RUN yum install -y epel-release centos-release-scl &&\
     yum clean all &&\
     rm -rf /var/cache/yum &&\
     ln -s /usr/lib/nagios/plugins/check_centreon_nrpe /usr/lib64/nagios/plugins/check_centreon_nrpe
+
+#Installing WMI support for queries
+ADD nagiosplugins /usr/lib/nagios/plugins/
+RUN chmod 755 -R /usr/lib/nagios/plugins/
+
+#Installing wmic
+RUN wget http://www6.atomicorp.com/channels/atomic/centos/7/x86_64/RPMS/wmi-1.3.14-4.el7.art.x86_64.rpm &&\
+    sudo yum -y localinstall wmi-1.3.14-4.el7.art.x86_64.rpm &&\
+    rm -rf wmi-1.3.14-4.el7.art.x86_64.rpm &&\
+    yum clean all &&\
+    rm -rf /var/cache/yum
 
 #Installing systemctl replacement in both paths to account for sudo
 RUN wget https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/master/files/docker/systemctl.py -O /usr/local/bin/systemctl &&\
