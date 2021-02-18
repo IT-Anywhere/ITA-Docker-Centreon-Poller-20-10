@@ -7,7 +7,7 @@ WORKDIR /root
 
 LABEL   maintainer="IT-Anywhere - Sergio Padure" \
         name="Centreon 20.10 Docker Poller" \
-        version="0.22"
+        version="0.23"
 
 #Installing required packages
 RUN yum install -y epel-release centos-release-scl &&\
@@ -16,6 +16,7 @@ RUN yum install -y epel-release centos-release-scl &&\
     yum install -y centreon-poller-centreon-engine openssh-server openssh-server-sysvinit sudo centreon-nrpe-plugin &&\
     yum install -y centreon-plugin-\* &&\
     yum install -y wget nano &&\
+    yum install -y time make gcc autoconf nagios-plugins-perl perl-Config-IniFiles perl-DateTime perl-Scalar-List-Utils perl-Number-Format &&\
     yum clean all &&\
     rm -rf /var/cache/yum &&\
     ln -s /usr/lib/nagios/plugins/check_centreon_nrpe /usr/lib64/nagios/plugins/check_centreon_nrpe
