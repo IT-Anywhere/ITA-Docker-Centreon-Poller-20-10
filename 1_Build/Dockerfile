@@ -7,7 +7,7 @@ WORKDIR /root
 
 LABEL   maintainer="IT-Anywhere - Sergio Padure" \
         name="Centreon 20.10 Docker Poller" \
-        version="0.23"
+        version="0.24"
 
 #Installing required packages
 RUN yum install -y epel-release centos-release-scl &&\
@@ -39,6 +39,9 @@ RUN wget https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement
 
 #Enabling required services
 RUN systemctl enable centengine centreontrapd snmptrapd gorgoned
+
+# timezone env with default
+ENV TZ Europe/Brussels
 
 # Entrypoint
 COPY entrypoint.sh entrypoint.sh
