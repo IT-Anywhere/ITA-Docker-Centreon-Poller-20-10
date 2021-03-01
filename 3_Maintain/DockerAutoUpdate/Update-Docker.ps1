@@ -43,7 +43,11 @@ Function Get_Info_Beetween_Strings {
     Return $Get_Info
 }
 
-Write_Log -Message_Type "INFO" -Message "Starting $Appli_name update process"											
+Write_Log -Message_Type "INFO" -Message "Starting Time Sync"
+
+docker run --privileged --rm alpine date -s "$(Get-Date ([datetime]::UTCNow) -UFormat "+%Y-%m-%d %H:%M:%S")"
+
+Write_Log -Message_Type "INFO" -Message "Starting $Appli_name update process"
 
 $New_Version_available = $False
 $Docker_Reg_Path = "HKLM:\software\microsoft\windows\currentversion\uninstall\Docker desktop"
