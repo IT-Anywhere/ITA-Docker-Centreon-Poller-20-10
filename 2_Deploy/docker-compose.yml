@@ -23,6 +23,7 @@ services:
             - PUBKEYURL=${PUBKEYURL}
             - POLLERID=${POLLERID}
             - TIMEZONE=${TIMEZONE}
+            - TZ=${TZTIME}
         ports:
 #            - "22:22"
             - "5550-5560:5550-5560"

@@ -13,3 +13,5 @@ PUBKEYURL=
 POLLERID=
 #Timezone. Has to be the same as the Centreon Host
 TIMEZONE=Europe\/London
+#TZ timezone. Has to be the code of your timezone (CET for example)
+TZTIME=CET
