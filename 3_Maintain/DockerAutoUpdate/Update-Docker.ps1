@@ -106,3 +106,46 @@ If (Test-Path $Docker_Reg_Path) {
 Else {
     Write_Log -Message_Type "ERROR" -Message "$Appli_name is not installed on your computer"																
 }
+
+#Updating wireguard
+switch ($env:PROCESSOR_ARCHITECTURE) {
+    'AMD64' { 
+        $path = @('HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall', 'HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall')
+    }
+    Default {
+        $path = @('HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall')
+    
+    }
+}
+    
+$wgcurrentversion = Get-ChildItem -Path $path | Get-ItemProperty | Where-Object { $_.DisplayName -match 'WireGuard' } | Select-Object -ExpandProperty 'DisplayVersion'
+    
+#Pulling and installing wireguard
+Write-Host "Pulling and installing wireguard"
+$files = (Invoke-WebRequest -Uri "https://download.wireguard.com/windows-client").Links.Href
+foreach ($file in $files) {
+    if ($file -like "wireguard-amd64-*.msi") {
+        $Installer = $file
+    }
+}
+if ($Installer -like "*$wgcurrentversion*") {
+    Write_Log -Message_Type "INFO" -Message "Wireguard is already installed"	
+}
+else {
+    $wireguard = "https://download.wireguard.com/windows-client/$Installer"
+    $InstallerFullPath = Join-Path -Path $WorkingDirectory -ChildPath $Installer
+    $Installerexists = Test-Path -Path $InstallerFullPath
+    if (-not $Installerexists) {
+        Invoke-WebRequest -Uri $wireguard -OutFile $InstallerFullPath | Out-Null
+    }
+    $arguments = "/i $InstallerFullPath /l*v $WorkingDirectory\wireguard-$dateandtime.log  /q DO_NOT_LAUNCH=True"
+    try {
+        # Install the package
+        Start-Process "msiexec.exe" -ArgumentList $arguments -Wait -NoNewWindow
+    }
+    catch {
+        Write_Log -Message_Type "ERROR" -Message "$_"
+    }
+    
+}
+    
