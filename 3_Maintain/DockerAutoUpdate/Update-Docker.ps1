@@ -122,14 +122,14 @@ $wgcurrentversion = Get-ChildItem -Path $path | Get-ItemProperty | Where-Object 
     
 #Pulling and installing wireguard
 Write-Host "Pulling and installing wireguard"
-$files = (Invoke-WebRequest -Uri "https://download.wireguard.com/windows-client").Links.Href
+$files = (Invoke-WebRequest -Uri "https://download.wireguard.com/windows-client" -UseBasicParsing).Links.Href
 foreach ($file in $files) {
     if ($file -like "wireguard-amd64-*.msi") {
         $Installer = $file
     }
 }
 if ($Installer -like "*$wgcurrentversion*") {
-    Write_Log -Message_Type "INFO" -Message "Wireguard is already installed"	
+    Write_Log -Message_Type "INFO" -Message "Wireguard is already up to date"	
 }
 else {
     $wireguard = "https://download.wireguard.com/windows-client/$Installer"
