@@ -61,35 +61,8 @@ EOF
 systemctl start gorgoned
 systemctl enable gorgoned
 
-# Get the SSH public key of the Central server to authorize user “centreon” to connect from the central to the poller
-# First, we need the central server to be ready before downloading the key
-echo " * Waiting for the central server to be ready…\n"
-until [ "$(curl --silent --location --output /dev/null --write-out '%{http_code}' --fail --noproxy '*'  $(printenv PUBKEYURL))" = "200" ]; do printf '.'; sleep 1; done
-# Server responded, actually download the key and add it to the authorized_keys file.
-echo -e "\n * Authorizing user “centreon” to connect from the central server…"
-curl --silent --location --noproxy "*" $(printenv PUBKEYURL) >> /var/lib/centreon/.ssh/authorized_keys &&\
-     chown -R centreon:centreon /var/lib/centreon/.ssh &&\
-     chmod 0600 /var/lib/centreon/.ssh/authorized_keys
-# Adding ssh key to root user as well
-curl --silent --location --noproxy "*" $(printenv PUBKEYURL) >> /root/.ssh/authorized_keys &&\
-     chown -R centreon:centreon /root/.ssh/authorized_keys &&\
-     chmod 0600 /root/.ssh/authorized_keys
-
-## !!!! It is still required to log once manually with this key. TODO: Push poller host key onto central’s known_hosts file for user centreon
-
-#Disabling password authentication
-sed -re 's/^(PasswordAuthentication)([[:space:]]+)yes/\1\2no/' -i.`date -I` /etc/ssh/sshd_config
-
 # Setting timezone
 sed -i -e "s/\;date.timezone =/date.timezone = $(printenv TIMEZONE)/" /etc/php.ini
-
-## Starting SSH server.
-echo -e " * Starting SSH server… \n"
-/etc/init.d/sshd start
-
-#Disabling password authentication
-sed -re 's/^(PasswordAuthentication)([[:space:]]+)yes/\1\2no/' -i.`date -I` /etc/ssh/sshd_config
-systemctl restart sshd
 
 echo -e " * Starting Centreon Engine… \n"
 /etc/init.d/centengine start
