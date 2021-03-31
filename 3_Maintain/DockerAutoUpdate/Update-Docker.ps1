@@ -153,15 +153,5 @@ else {
     
 }
 
-#Starting logging
-$ErrorActionPreference = "SilentlyContinue"
-Stop-Transcript | out-null
-#Continuing
-$ErrorActionPreference = "Continue"
-Start-Transcript -path "$WorkingDirectory\restart.log" -append
-$ProgressPreference = 'SilentlyContinue' 
 #Updating docker image
 Start-Process $restartdocker
-
-#Stop logging
-Stop-Transcript
