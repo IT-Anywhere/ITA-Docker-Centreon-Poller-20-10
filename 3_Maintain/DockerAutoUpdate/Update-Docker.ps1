@@ -154,4 +154,4 @@ else {
 }
 
 #Updating docker image
-Start-Process $restartdocker | Out-File C:\temp\restartdocker.log
+Start-Process $restartdocker | Out-File -filepath "C:\temp\restartdocker.log"
