@@ -9,7 +9,7 @@
 $scriptdir = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
 $RootDir = [System.IO.Path]::GetDirectoryName($MyInvocation.MyCommand.Path)
 $ParentDir = [System.IO.Path]::GetDirectoryName($RootDir)
-$ParentDir2 = [System.IO.Path]::GetDirectoryName($RootDir)
+$ParentDir2 = [System.IO.Path]::GetDirectoryName($ParentDir)
 $restartdocker = "$ParentDir2\2_Deploy\restartdocker.bat"
 $WorkingDirectory = "C:\temp\docker"
 $WDExists = Test-Path -Path $WorkingDirectory
