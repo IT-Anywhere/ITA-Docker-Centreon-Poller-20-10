@@ -49,6 +49,7 @@ Function Get_Info_Beetween_Strings {
 
 Write_Log -Message_Type "INFO" -Message "Starting Time Sync"
 
+#Updating time
 $timeupdateoutput = docker run --privileged --rm alpine date -s "$(Get-Date ([datetime]::UTCNow) -UFormat "+%Y-%m-%d %H:%M:%S")"
 
 Write_Log -Message_Type "INFO" -Message "$timeupdateoutput"

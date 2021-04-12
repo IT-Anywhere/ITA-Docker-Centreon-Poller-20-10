@@ -7,7 +7,7 @@ WORKDIR /root
 
 LABEL   maintainer="IT-Anywhere - Sergio Padure" \
         name="Centreon 20.10 Docker Poller" \
-        version="0.27"
+        version="0.28"
 
 #Installing required packages
 RUN yum install -y epel-release centos-release-scl &&\
@@ -15,7 +15,7 @@ RUN yum install -y epel-release centos-release-scl &&\
     yum update -y &&\
     yum install -y centreon-poller-centreon-engine sudo centreon-nrpe-plugin &&\
     yum install -y centreon-plugin-\* &&\
-    yum install -y wget nano php net-snmp-utils 'perl(Net::SNMP)' &&\
+    yum install -y wget nano php perl-Net-SNMP* net-snmp-utils 'perl(Net::SNMP)' &&\
     yum install -y time make gcc autoconf nagios-plugins-perl perl-Config-IniFiles perl-DateTime perl-Scalar-List-Utils perl-Number-Format &&\
     yum clean all &&\
     rm -rf /var/cache/yum &&\
