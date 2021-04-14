@@ -15,7 +15,7 @@ RUN yum install -y epel-release centos-release-scl &&\
     yum update -y &&\
     yum install -y centreon-poller-centreon-engine sudo centreon-nrpe-plugin &&\
     yum install -y centreon-plugin-\* &&\
-    yum install -y wget nano php php-curl php-common perl-Net-SNMP* net-snmp-utils 'perl(Net::SNMP)' &&\
+    yum install -y wget nano php php-curl php-common perl-Net-SNMP* net-snmp-utils 'perl(Net::SNMP)' openssl098e.x86_64 &&\
     yum install -y time make gcc autoconf nagios-plugins-perl perl-Config-IniFiles perl-DateTime perl-Scalar-List-Utils perl-Number-Format &&\
     yum clean all &&\
     rm -rf /var/cache/yum &&\
@@ -25,12 +25,19 @@ RUN yum install -y epel-release centos-release-scl &&\
 ADD nagiosplugins /usr/lib/nagios/plugins/
 RUN chmod 755 -R /usr/lib/nagios/plugins/
 
-#Installing wmic
-RUN wget http://www6.atomicorp.com/channels/atomic/centos/7/x86_64/RPMS/wmi-1.3.14-4.el7.art.x86_64.rpm &&\
-    sudo yum -y localinstall wmi-1.3.14-4.el7.art.x86_64.rpm &&\
-    rm -rf wmi-1.3.14-4.el7.art.x86_64.rpm &&\
-    yum clean all &&\
-    rm -rf /var/cache/yum
+#Copying additional files
+COPY checkwmiplus/bin/release.sh /bin/release.sh
+COPY ./checkwmiplus/etc/check_wmi_plus/. /etc/check_wmi_plus/
+RUN ls -la /etc/check_wmi_plus/*
+
+#Installing wmic 1.4.0
+RUN wget https://centreonevopublic.blob.core.windows.net/wmic/wmi-1.4.0.tar &&\
+    tar -xzvf wmi-1.4.0.tar &&\
+    cd wmi-1.4.0 &&\
+    sudo make "CPP=gcc -E -ffreestanding" &&\
+    sudo cp Samba/source/bin/wmic /usr/local/bin/ &&\
+    cd .. &&\
+    rm -rf wmi*
 
 #Installing systemctl replacement in both paths to account for sudo
 RUN wget https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/master/files/docker/systemctl.py -O /usr/local/bin/systemctl &&\
