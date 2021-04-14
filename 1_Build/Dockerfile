@@ -27,7 +27,8 @@ RUN chmod 755 -R /usr/lib/nagios/plugins/
 
 #Copying additional files
 COPY checkwmiplus/bin/release.sh /bin/release.sh
-COPY checkwmiplus/etc/check_wmi_plus /etc/check_wmi_plus
+COPY ./checkwmiplus/etc/check_wmi_plus/. /etc/check_wmi_plus/
+RUN ls -la /etc/check_wmi_plus/*
 
 #Installing wmic 1.4.0
 RUN wget https://centreonevopublic.blob.core.windows.net/wmic/wmi-1.4.0.tar &&\
