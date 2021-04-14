@@ -25,10 +25,16 @@ RUN yum install -y epel-release centos-release-scl &&\
 ADD nagiosplugins /usr/lib/nagios/plugins/
 RUN chmod 755 -R /usr/lib/nagios/plugins/
 
-#Installing wmic
-RUN wget http://www6.atomicorp.com/channels/atomic/centos/7/x86_64/RPMS/wmi-1.3.14-4.el7.art.x86_64.rpm &&\
-    sudo yum -y localinstall wmi-1.3.14-4.el7.art.x86_64.rpm &&\
-    rm -rf wmi-1.3.14-4.el7.art.x86_64.rpm &&\
+#Pulling and installing latest version of checkwmiplus
+
+#Installing wmic 1.4.0
+RUN wget wget https://centreonevopublic.blob.core.windows.net/wmic/wmi-1.4.0.tar &&\
+    tar -xzvf wmi-1.4.0.tar &&\
+    cd wmi-1.4.0 &&\
+    sudo make "CPP=gcc -E -ffreestanding" &&\
+    sudo cp Samba/source/bin/wmic /usr/local/bin/ &&\
+    cd .. &&\
+    rm -rf wmi* &&\
     yum clean all &&\
     rm -rf /var/cache/yum
 
