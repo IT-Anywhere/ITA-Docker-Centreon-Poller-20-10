@@ -28,7 +28,7 @@ RUN chmod 755 -R /usr/lib/nagios/plugins/
 #Pulling and installing latest version of checkwmiplus
 
 #Installing wmic 1.4.0
-RUN wget wget https://centreonevopublic.blob.core.windows.net/wmic/wmi-1.4.0.tar &&\
+RUN wget https://centreonevopublic.blob.core.windows.net/wmic/wmi-1.4.0.tar &&\
     tar -xzvf wmi-1.4.0.tar &&\
     cd wmi-1.4.0 &&\
     sudo make "CPP=gcc -E -ffreestanding" &&\
