@@ -110,7 +110,7 @@ else {
     }
 
     #Registering the automatic scheduled task that will keep Docker up to date even if running as a service account
-    Write-Host "Installing scheduled task"
+    Write-Host "Installing update scheduled task"
     try {
         #Preparing file variable
         $scheduledarguments = "-WindowStyle Hidden -ExecutionPolicy Bypass -File `"$mainpath\3_Maintain\DockerAutoUpdate\Update-Docker.ps1`""
@@ -126,7 +126,35 @@ else {
 
         #Starting the scheduled task
         Start-ScheduledTask -TaskName "UpdateDocker" -ErrorAction SilentlyContinue
-    }catch{
+    }
+    catch {
+        $_
+    }
+    #Registering the automatic scheduled task that will regularly re-sync time with the local system
+    Write-Host "Installing timesync scheduled task"
+    try {
+        #Preparing file variable
+        $scheduledarguments = "-WindowStyle Hidden -ExecutionPolicy Bypass -File `"$mainpath\3_Maintain\DockerAutoUpdate\Update-Docker.ps1`" -OnlyTime"
+        #Preparing the Scheduled Task Properties
+        $trigger = New-ScheduledTaskTrigger -AtStartup
+        $action = New-ScheduledTaskAction -Execute 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -Argument $scheduledarguments
+        $settings = New-ScheduledTaskSettingsSet -Compatibility Win8 -StartWhenAvailable -RestartCount 999
+        $settings.ExecutionTimeLimit = 'PT72H'
+        $settings.RestartInterval = 'PT1M' 
+
+    
+        #Registering the scheduled task
+        Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "UpdateDockerTime" -Settings $settings -User "NT AUTHORITY\SYSTEM" -RunLevel Highest -ErrorAction SilentlyContinue -Force
+
+        #adding repeat every 1 hour
+        $schdtask = Get-ScheduledTask -TaskName "UpdateDockerTime"
+        $schdtask.Triggers.Repetition.Interval = "PT1H"
+        $schdtask | Set-ScheduledTask -User "NT AUTHORITY\SYSTEM"
+    
+        #Starting the scheduled task
+        Start-ScheduledTask -TaskName "UpdateDockerTime" -ErrorAction SilentlyContinue
+    }
+    catch {
         $_
     }
     <#
