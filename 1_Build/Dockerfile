@@ -15,7 +15,7 @@ RUN yum install -y epel-release centos-release-scl &&\
     yum update -y &&\
     yum install -y centreon-poller-centreon-engine sudo centreon-nrpe-plugin &&\
     yum install -y centreon-plugin-\* &&\
-    yum install -y wget nano php php-curl php-common perl-Net-SNMP* net-snmp-utils 'perl(Net::SNMP)' &&\
+    yum install -y wget nano php php-curl php-common perl-Net-SNMP* net-snmp-utils 'perl(Net::SNMP)' openssl098e.x86_64 &&\
     yum install -y time make gcc autoconf nagios-plugins-perl perl-Config-IniFiles perl-DateTime perl-Scalar-List-Utils perl-Number-Format &&\
     yum clean all &&\
     rm -rf /var/cache/yum &&\
