@@ -25,8 +25,6 @@ RUN yum install -y epel-release centos-release-scl &&\
 ADD nagiosplugins /usr/lib/nagios/plugins/
 RUN chmod 755 -R /usr/lib/nagios/plugins/
 
-#Pulling and installing latest version of checkwmiplus
-
 #Installing wmic 1.4.0
 RUN wget https://centreonevopublic.blob.core.windows.net/wmic/wmi-1.4.0.tar &&\
     tar -xzvf wmi-1.4.0.tar &&\
