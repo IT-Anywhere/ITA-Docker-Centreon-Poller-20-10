@@ -25,6 +25,10 @@ RUN yum install -y epel-release centos-release-scl &&\
 ADD nagiosplugins /usr/lib/nagios/plugins/
 RUN chmod 755 -R /usr/lib/nagios/plugins/
 
+#Copying additional files
+COPY checkwmiplus/bin/release.sh /bin/release.sh
+COPY checkwmiplus/etc/check_wmi_plus /etc/check_wmi_plus
+
 #Installing wmic 1.4.0
 RUN wget https://centreonevopublic.blob.core.windows.net/wmic/wmi-1.4.0.tar &&\
     tar -xzvf wmi-1.4.0.tar &&\
@@ -32,9 +36,7 @@ RUN wget https://centreonevopublic.blob.core.windows.net/wmic/wmi-1.4.0.tar &&\
     sudo make "CPP=gcc -E -ffreestanding" &&\
     sudo cp Samba/source/bin/wmic /usr/local/bin/ &&\
     cd .. &&\
-    rm -rf wmi* &&\
-    yum clean all &&\
-    rm -rf /var/cache/yum
+    rm -rf wmi*
 
 #Installing systemctl replacement in both paths to account for sudo
 RUN wget https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/master/files/docker/systemctl.py -O /usr/local/bin/systemctl &&\
