@@ -24,9 +24,11 @@ if (-not $WDExists) {
 $dateandtime = Get-Date -Format "dd_MM_yyyy_HH-mm"
 
 #Updating repo
-#Set-Location C:\temp\Code\ITA-Docker-Centreon-Poller-20-10
+$currentpath = (Get-Location).Path
 $repolocation = "C:\temp\Code\ITA-Docker-Centreon-Poller-20-10"
-Start-Process -FilePath "C:\Program Files\Git\cmd\git.exe" -ArgumentList "pull -C $repolocation" -Wait -NoNewWindow
+Set-Location $repolocation
+Start-Process -FilePath "C:\Program Files\Git\cmd\git.exe" -ArgumentList "pull" -Wait -NoNewWindow
+Set-Location $currentpath
 
 if ($OnlyTime) {
     #Updating time
