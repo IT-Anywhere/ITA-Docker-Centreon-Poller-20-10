@@ -7,7 +7,7 @@ WORKDIR /root
 
 LABEL   maintainer="IT-Anywhere - Sergio Padure" \
         name="Centreon 20.10 Docker Poller" \
-        version="0.30"
+        version="0.31"
 
 #Installing required packages
 RUN yum install -y epel-release centos-release-scl &&\
