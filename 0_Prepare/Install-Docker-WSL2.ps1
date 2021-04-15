@@ -108,6 +108,29 @@ else {
     catch {
         $_
     }
+    #Pulling and installing git for windows
+    Write-Host "Pulling and installing git for windows"
+    $repo = "git-for-windows/git"
+    $regex = [Regex]::new("(Git-)(\d+\.\d+\.\d+)(-64-bit.exe)")
+    $releases = "https://api.github.com/repos/$repo/releases"
+    $tag = (Invoke-WebRequest $releases | ConvertFrom-Json)[0].tag_name
+    $body = (Invoke-WebRequest $releases | ConvertFrom-Json)[0].body
+    $Installer = $regex.Matches($body).Value
+    $download = "https://github.com/$repo/releases/download/$tag/$Installer"
+
+    $InstallerFullPath = Join-Path -Path $WorkingDirectory -ChildPath $Installer
+    $Installerexists = Test-Path -Path $InstallerFullPath
+    if (-not $Installerexists) {
+        Invoke-WebRequest -Uri $download -OutFile $InstallerFullPath | Out-Null
+    }
+    $arguments = "/VERYSILENT /NORESTART /COMPONENTS=ext,ext\shellhere,ext\guihere,gitlfs,assoc,assoc_sh,autoupdate /LOG=`"$WorkingDirectory\Git64-$tag-Install.log`""
+    try {
+        # Install the package
+        Start-Process $InstallerFullPath -ArgumentList $arguments -Wait -NoNewWindow
+    }
+    catch {
+        $_
+    }
 
     #Registering the automatic scheduled task that will keep Docker up to date even if running as a service account
     Write-Host "Installing update scheduled task"
