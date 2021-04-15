@@ -3798,10 +3798,10 @@ if ($the_arguments{'_arg1'} eq '') {
 }
 
 # default interface stats query for server 2012 and above
-my $interface_query='select CurrentBandwidth,BytesReceivedPerSec,BytesSentPerSec,Name,Frequency_Sys100NS,OutputQueueLength,PacketsReceivedErrors,PacketsReceivedPerSec,PacketsSentPerSec,Timestamp_Sys100NS from Win32_PerfRawData_Tcpip_NetworkAdapter';
+my $interface_query='select CurrentBandwidth,BytesReceivedPerSec,BytesSentPerSec,Name,Frequency_Sys100NS,OutputQueueLength,PacketsReceivedErrors,PacketsReceivedPerSec,PacketsSentPerSec,Timestamp_Sys100NS from Win32_PerfRawData_Tcpip_NetworkInterface';
 
 if ($the_arguments{'_arg2'} eq 'legacy') {
-   $interface_query='select CurrentBandwidth,BytesReceivedPerSec,BytesSentPerSec,Name,Frequency_Sys100NS,OutputQueueLength,PacketsReceivedErrors,PacketsReceivedPerSec,PacketsSentPerSec,Timestamp_Sys100NS from Win32_PerfRawData_Tcpip_NetworkInterface';
+   $interface_query='select CurrentBandwidth,BytesReceivedPerSec,BytesSentPerSec,Name,Frequency_Sys100NS,OutputQueueLength,PacketsReceivedErrors,PacketsReceivedPerSec,PacketsSentPerSec,Timestamp_Sys100NS from Win32_PerfRawData_Tcpip_NetworkAdapter';
 }
 
 my ($data_errors,$last_wmi_data_index)=get_wmi_data($num_samples,'',$interface_query,'','',\@collected_data,\$the_arguments{'_delay'},undef,0);
