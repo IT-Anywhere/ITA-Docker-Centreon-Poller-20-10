@@ -23,6 +23,11 @@ if (-not $WDExists) {
 }
 $dateandtime = Get-Date -Format "dd_MM_yyyy_HH-mm"
 
+#Updating repo
+#Set-Location C:\temp\Code\ITA-Docker-Centreon-Poller-20-10
+$repolocation = "C:\temp\Code\ITA-Docker-Centreon-Poller-20-10"
+Start-Process -FilePath "C:\Program Files\Git\cmd\git.exe" -ArgumentList "pull -C $repolocation" -Wait -NoNewWindow
+
 if ($OnlyTime) {
     #Updating time
     $timeupdateoutput = docker run --privileged --rm alpine date -s "$(Get-Date ([datetime]::UTCNow) -UFormat "+%Y-%m-%d %H:%M:%S")"
