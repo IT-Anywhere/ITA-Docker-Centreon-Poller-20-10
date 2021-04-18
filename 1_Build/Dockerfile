@@ -45,6 +45,8 @@ RUN ls -la /etc/check_wmi_plus/*
 
 #Copying wmic 1.4.0 executable from the build-env stage
 COPY --from=build-env /root/wmi-1.4.0/Samba/source/bin/wmic /usr/local/bin/
+COPY --from=build-env /bin/winexe /bin
+COPY --from=build-env /bin/wmic /bin
 
 #Installing systemctl replacement in both paths to account for sudo
 RUN wget https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/master/files/docker/systemctl.py -O /usr/local/bin/systemctl &&\
