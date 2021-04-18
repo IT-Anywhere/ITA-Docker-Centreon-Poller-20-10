@@ -7,7 +7,7 @@ USER root
 WORKDIR /root
 
 #Installing required dependencies
-RUN yum install -y autoconf make gcc libdatetime-perl build-essential g++ python-dev
+RUN yum install -y wget tar sudo autoconf make gcc libdatetime-perl build-essential g++ python-dev
 
 #Building wmic 1.4.0
 RUN wget https://centreonevopublic.blob.core.windows.net/wmic/wmi-1.4.0.tar &&\
