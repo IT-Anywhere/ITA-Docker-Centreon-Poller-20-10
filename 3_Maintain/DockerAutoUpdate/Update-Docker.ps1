@@ -31,6 +31,18 @@ Start-Process -FilePath "C:\Program Files\Git\cmd\git.exe" -ArgumentList "pull" 
 Set-Location $currentpath
 
 if ($OnlyTime) {
+    #Ensuring that Docker Desktop is running. If not, starting it.
+    try {
+        $dockerservice = Get-Process -Name "Docker Desktop" -ErrorAction Stop
+        $dockerprocessstatus = "Docker Desktop is running correctly"
+        $dockerprocess = Get-Process *docker*
+    }
+    catch {
+        $dockerprocessstatus = "Docker Desktop is not running. Starting"
+        Start-ScheduledTask -TaskName "StartDockerAtStartup"
+        Start-Sleep -Seconds 5
+        $dockerprocess = Get-Process *docker*
+    }
     #Updating time
     $timeupdateoutput = docker run --privileged --rm alpine date -s "$(Get-Date ([datetime]::UTCNow) -UFormat "+%Y-%m-%d %H:%M:%S")"
 }
@@ -63,11 +75,15 @@ else {
         $Get_Info = ([regex]::match($version, $Check_Pattern).Groups[1].Value).Trim()
         Return $Get_Info
     }
+    #Docker Process
+    Write_Log -Message_Type "INFO" -Message "$dockerprocessstatus"
+    Write_Log -Message_Type "INFO" -Message "$dockerservice"
 
+    #Timelog
     Write_Log -Message_Type "INFO" -Message "Starting Time Sync"
-
     Write_Log -Message_Type "INFO" -Message "$timeupdateoutput"
 
+    #Applications install
     Write_Log -Message_Type "INFO" -Message "Starting $Appli_name update process"
 
     $New_Version_available = $False
