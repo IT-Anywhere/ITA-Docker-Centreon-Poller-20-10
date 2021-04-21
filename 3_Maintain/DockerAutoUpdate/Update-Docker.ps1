@@ -190,4 +190,7 @@ else {
     #Updating time
     $timeupdateoutput = docker run --privileged --rm alpine date -s "$(Get-Date ([datetime]::UTCNow) -UFormat "+%Y-%m-%d %H:%M:%S")"
 
+    #Restarting computer to fix any lingering issues
+    Start-Sleep -Seconds 60
+    Restart-Computer -Force
 }
