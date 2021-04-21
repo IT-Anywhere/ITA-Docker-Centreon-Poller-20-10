@@ -80,6 +80,7 @@ if ($OnlyTime) {
     #Docker Process
     Write_Log -Message_Type "INFO" -Message "$dockerprocessstatus"
     Write_Log -Message_Type "INFO" -Message "$dockerservice"
+    Write_Log -Message_Type "INFO" -Message "$dockerprocess"
     
     #Timelog
     Write_Log -Message_Type "INFO" -Message "Starting Time Sync hourly"
