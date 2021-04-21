@@ -114,7 +114,7 @@ else {
 		$responce = curl_exec($ch);
 		
 		if(curl_error($ch) != "") {
-			returnNagios("UNKNOWN", $e->getMessage());
+			returnNagios("UNKNOWN", curl_error($ch));
 		}
 		
 	} catch(Exception $e) {
@@ -754,4 +754,3 @@ function returnNagios($Result="UNKNOWN", $message="") {
 }
  
 ?>
-
