@@ -30,6 +30,37 @@ Set-Location $repolocation
 Start-Process -FilePath "C:\Program Files\Git\cmd\git.exe" -ArgumentList "pull" -Wait -NoNewWindow
 Set-Location $currentpath
 
+#Preparing logging functions
+$Log_File_Full = "$WorkingDirectory\Debug\Update_Docker_Full_Log.log"
+$Log_File = "$WorkingDirectory\Debug\Docker_Update.log"
+$Appli_name = "Docker for Windows"
+
+If (!(test-path $Log_File)) { new-item $Log_File -type file -force }
+$Global:Current_Folder = split-path $MyInvocation.MyCommand.Path
+
+#Preparing functions
+Function Write_Log {
+    param(
+        $Message_Type,	
+        $Message
+    )
+    
+    $MyDate = "[{0:MM/dd/yy} {0:HH:mm:ss}]" -f (Get-Date)		
+    Add-Content $Log_File  "$MyDate - $Message_Type : $Message"			
+}
+Function Get_Info_Beetween_Strings {
+    [CmdletBinding()]
+    Param
+    (
+        [Parameter(Mandatory = $false)]	
+        [string]$version
+    )	
+    $Check_Pattern = ">(.*?)</a>"
+    $Get_Info = ([regex]::match($version, $Check_Pattern).Groups[1].Value).Trim()
+    Return $Get_Info
+}
+
+
 if ($OnlyTime) {
     #Ensuring that Docker Desktop is running. If not, starting it.
     try {
@@ -45,44 +76,16 @@ if ($OnlyTime) {
     }
     #Updating time
     $timeupdateoutput = docker run --privileged --rm alpine date -s "$(Get-Date ([datetime]::UTCNow) -UFormat "+%Y-%m-%d %H:%M:%S")"
-}
-else {
-    $Log_File_Full = "$WorkingDirectory\Debug\Update_Docker_Full_Log.log"
-    $Log_File = "$WorkingDirectory\Debug\Docker_Update.log"
-    $Appli_name = "Docker for Windows"
 
-    If (!(test-path $Log_File)) { new-item $Log_File -type file -force }
-    $Global:Current_Folder = split-path $MyInvocation.MyCommand.Path
-
-    #Preparing functions
-    Function Write_Log {
-        param(
-            $Message_Type,	
-            $Message
-        )
-		
-        $MyDate = "[{0:MM/dd/yy} {0:HH:mm:ss}]" -f (Get-Date)		
-        Add-Content $Log_File  "$MyDate - $Message_Type : $Message"			
-    }
-    Function Get_Info_Beetween_Strings {
-        [CmdletBinding()]
-        Param
-        (
-            [Parameter(Mandatory = $false)]	
-            [string]$version
-        )	
-        $Check_Pattern = ">(.*?)</a>"
-        $Get_Info = ([regex]::match($version, $Check_Pattern).Groups[1].Value).Trim()
-        Return $Get_Info
-    }
     #Docker Process
     Write_Log -Message_Type "INFO" -Message "$dockerprocessstatus"
     Write_Log -Message_Type "INFO" -Message "$dockerservice"
-
+    
     #Timelog
-    Write_Log -Message_Type "INFO" -Message "Starting Time Sync"
+    Write_Log -Message_Type "INFO" -Message "Starting Time Sync hourly"
     Write_Log -Message_Type "INFO" -Message "$timeupdateoutput"
-
+}
+else {
     #Applications install
     Write_Log -Message_Type "INFO" -Message "Starting $Appli_name update process"
 
@@ -189,6 +192,10 @@ else {
 
     #Updating time
     $timeupdateoutput = docker run --privileged --rm alpine date -s "$(Get-Date ([datetime]::UTCNow) -UFormat "+%Y-%m-%d %H:%M:%S")"
+
+    #Timelog
+    Write_Log -Message_Type "INFO" -Message "Starting Time Sync Daily"
+    Write_Log -Message_Type "INFO" -Message "$timeupdateoutput"
 
     #Restarting computer to fix any lingering issues
     Start-Sleep -Seconds 60
