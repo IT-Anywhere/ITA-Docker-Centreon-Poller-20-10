@@ -193,6 +193,10 @@ else {
     #Updating time
     $timeupdateoutput = docker run --privileged --rm alpine date -s "$(Get-Date ([datetime]::UTCNow) -UFormat "+%Y-%m-%d %H:%M:%S")"
 
+    #Cleaning old images
+    $cleanup = docker image prune -a -f
+    Write_Log -Message_Type "INFO" -Message "$cleanup"
+
     #Timelog
     Write_Log -Message_Type "INFO" -Message "Starting Time Sync Daily"
     Write_Log -Message_Type "INFO" -Message "$timeupdateoutput"
