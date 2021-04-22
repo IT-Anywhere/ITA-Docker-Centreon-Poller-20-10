@@ -1,8 +1,8 @@
-# ITA-Docker-Centreon-Poller-20-10
-ITA-Docker-Centreon-Poller-20-10
+# ITA-Docker-Centreon-Poller-21-04
+ITA-Docker-Centreon-Poller-21-04
 
 Basic steps Host:
-  - Deploy Centreon 20.10 host server from ISO following the instructions in the Centreon knowledge base: https://docs.centreon.com/current/en/installation/installation-of-a-central-server/using-centreon-iso.html
+  - Deploy Centreon 21-04 host server from ISO following the instructions in the Centreon knowledge base: https://docs.centreon.com/current/en/installation/installation-of-a-central-server/using-centreon-iso.html
 
   - Add the pollers using the wizard and replace 
     - service centengine start
