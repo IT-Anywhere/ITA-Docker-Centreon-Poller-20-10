@@ -35,6 +35,18 @@ $Log_File_Full = "$WorkingDirectory\Debug\Update_Docker_Full_Log.log"
 $Log_File = "$WorkingDirectory\Debug\Docker_Update.log"
 $Appli_name = "Docker for Windows"
 
+#Compressing and removing logfile if too big
+$logfilesize = Get-ChildItem $Log_File
+if ($logfilesize.Length -ge 1MB) {
+    $compress = @{
+        Path             = $Log_File
+        CompressionLevel = "Fastest"
+        DestinationPath  = "$WorkingDirectory\Debug\Docker_Update_$dateandtime.zip"
+    }
+    Compress-Archive @compress
+    Remove-Item $Log_File -Force
+}
+
 If (!(test-path $Log_File)) { new-item $Log_File -type file -force }
 $Global:Current_Folder = split-path $MyInvocation.MyCommand.Path
 
@@ -82,9 +94,10 @@ else {
     Set-Location $currentpath
     Start-Sleep -Seconds 3
     $dockercontainerstatus2 = Get-DockerContainerStatus
-    if ($dockercontainerstatus2){
+    if ($dockercontainerstatus2) {
         Write_Log -Message_Type "INFO" -Message "Docker Container is up now"
-    }else{
+    }
+    else {
         Write_Log -Message_Type "INFO" -Message "Docker Container is still down"
     }
 }
