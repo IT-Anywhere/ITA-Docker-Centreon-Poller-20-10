@@ -1,5 +1,5 @@
 # ITA-Docker-Centreon-Poller-20-10
-ITA-Docker-Centreon-Poller-20-10
+## WARNING: This repo will not be further updated. If you're looking for the latest version you can find it here: https://github.com/IT-Anywhere/ITA-Docker-Centreon-Poller
 
 Basic steps Host:
   - Deploy Centreon 20.10 host server from ISO following the instructions in the Centreon knowledge base: https://docs.centreon.com/current/en/installation/installation-of-a-central-server/using-centreon-iso.html
