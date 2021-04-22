@@ -85,18 +85,18 @@ else {
 if ($OnlyTime) {
     #Ensuring that Docker Desktop is running. If not, starting it.
     try {
-        $dockerservice = Get-Process -Name "Docker Desktop" -ErrorAction Stop
-        $dockerprocessstatus = "Docker Desktop is running correctly"
-        $dockerprocess = Get-Process *docker*
+        [string]$dockerservice = Get-Process -Name "Docker Desktop" -ErrorAction Stop  | Select-Object -ExpandProperty 'ProcessName'
+        [string]$dockerprocessstatus = "Docker Desktop is running correctly"
+        [string]$dockerprocess = Get-Process *docker*  | Select-Object -ExpandProperty 'ProcessName'
     }
     catch {
-        $dockerprocessstatus = "Docker Desktop is not running. Starting"
+        [string]$dockerprocessstatus = "Docker Desktop is not running. Starting"
         Start-ScheduledTask -TaskName "StartDockerAtStartup"
         Start-Sleep -Seconds 5
         $dockerprocess = Get-Process *docker*
     }
     #Updating time
-    $timeupdateoutput = docker run --privileged --rm alpine date -s "$(Get-Date ([datetime]::UTCNow) -UFormat "+%Y-%m-%d %H:%M:%S")"
+    [string]$timeupdateoutput = docker run --privileged --rm alpine date -s "$(Get-Date ([datetime]::UTCNow) -UFormat "+%Y-%m-%d %H:%M:%S")"
 
     #Docker Process
     Write_Log -Message_Type "INFO" -Message "$dockerprocessstatus"
