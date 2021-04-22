@@ -27,7 +27,7 @@ LABEL   maintainer="IT-Anywhere - Sergio Padure" \
 
 #Installing required packages
 RUN yum install -y epel-release centos-release-scl &&\
-    yum install -y http://yum.centreon.com/standard/20.10/el7/stable/noarch/RPMS/centreon-release-20.10-2.el7.centos.noarch.rpm &&\
+    yum install -y http://yum.centreon.com/standard/21.04/el7/stable/noarch/RPMS/centreon-release-21.04-4.el7.centos.noarch.rpm &&\
     yum update -y &&\
     yum install -y centreon-poller-centreon-engine sudo centreon-nrpe-plugin centreon-plugin-\* wget time nano php php-curl php-common net-snmp-utils openssl098e.x86_64 nagios-plugins-perl perl-Config-IniFiles perl-DateTime perl-Scalar-List-Utils perl-Number-Format perl-Net-SNMP* 'perl(Net::SNMP)' &&\
     yum clean all &&\
