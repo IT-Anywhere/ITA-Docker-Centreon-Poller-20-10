@@ -60,6 +60,27 @@ Function Get_Info_Beetween_Strings {
     Return $Get_Info
 }
 
+function Get-DockerContainerStatus {
+    docker ps --format "{{.Names}}\t{{.ID}}\t{{.Status}}\t{{.Ports}}" |
+    ConvertFrom-CSV -Delimiter "`t" -Header ("Names", "Id", "Status", "Ports") |
+    Sort-Object Names
+}
+  
+#Remediation to start the container if not running
+$dockercontainerstatus = Get-DockerContainerStatus
+if ($dockercontainerstatus) {
+    Write-Warning "Up"
+    $containername = $dockercontainerstatus | Select-Object -ExpandProperty 'Names'
+    Write_Log -Message_Type "INFO" -Message "Docker Container $containername is up"
+}
+else {
+    Write_Log -Message_Type "ERROR" -Message "Docker Container is down. Remediating"
+    $dockercomposelocation = "$repolocation\2_Deploy"
+    Set-Location $dockercomposelocation
+    $dockercomposeup = docker-compose up -d
+    Write_Log -Message_Type "INFO" -Message "$dockercomposeup"
+    Set-Location $currentpath
+}
 
 if ($OnlyTime) {
     #Ensuring that Docker Desktop is running. If not, starting it.

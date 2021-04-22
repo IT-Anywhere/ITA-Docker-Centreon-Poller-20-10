@@ -13,7 +13,7 @@ services:
         container_name: centreon_poller
         hostname: ${HOSTNAME}
         domainname: ${DOMAINNAME}
-        restart: on-failure
+        restart: always
         volumes:
             - centreonpoller-etc:/etc
             - centreonpoller-cache:/var/cache
