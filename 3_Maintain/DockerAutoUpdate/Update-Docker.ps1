@@ -77,9 +77,16 @@ else {
     Write_Log -Message_Type "ERROR" -Message "Docker Container is down. Remediating"
     $dockercomposelocation = "$repolocation\2_Deploy"
     Set-Location $dockercomposelocation
-    $dockercomposeup = docker-compose up -d
+    [string]$dockercomposeup = docker-compose up -d
     Write_Log -Message_Type "INFO" -Message "$dockercomposeup"
     Set-Location $currentpath
+    Start-Sleep -Seconds 3
+    $dockercontainerstatus2 = Get-DockerContainerStatus
+    if ($dockercontainerstatus2){
+        Write_Log -Message_Type "INFO" -Message "Docker Container is up now"
+    }else{
+        Write_Log -Message_Type "INFO" -Message "Docker Container is still down"
+    }
 }
 
 if ($OnlyTime) {
