@@ -247,3 +247,26 @@ else {
     Start-Sleep -Seconds 60
     Restart-Computer -Force
 }
+
+#Ensuring Wireguard tunnel is running
+$wgconfpath = "C:\Program Files\WireGuard\Data\Configurations"
+$conffiles = Get-ChildItem -Path $wgconfpath | Select-Object -ExpandProperty 'FullName'
+$servicerunning = Get-Service WireguardTunnel*
+
+if(-not $servicerunning){
+    Write_Log -Message_Type "ERROR" -Message "Wireguard Tunnel is not running. Installing"
+        foreach ($conffile in $conffiles){
+            $wireguardexecutable = "C:\Program Files\WireGuard\wireguard.exe"
+            $arguments = "/installtunnelservice `"$conffile`""
+            $null = Start-Process $wireguardexecutable -ArgumentList $arguments -Wait -NoNewWindow -PassThru
+        }
+$servicerunning2 = Get-Service WireguardTunnel*
+if(-not $servicerunning2){
+    Write_Log -Message_Type "ERROR" -Message "Something is wrong, tunnel hasn't started. Please check config files"
+}else{
+    Write_Log -Message_Type "INFO" -Message "Tunnel Service has been correctly started"
+}
+
+}else{
+    Write_Log -Message_Type "INFO" -Message "Wireguard tunnel is running, no action required"
+}
